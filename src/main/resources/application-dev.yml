@@ -1,0 +1,21 @@
+server:
+  port: 8181  
+  
+spring:
+  jpa:
+    database: POSTGRESQL 
+    properties:
+      hibernate:
+        temp.use_jdbc_metadata_defaults: false      
+    show-sql: true
+    hibernate:
+      ddl-auto: validate       
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/finance
+    username: postgres
+    password: '951951'
+   
+
+
