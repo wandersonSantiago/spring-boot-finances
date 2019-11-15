@@ -1,5 +1,6 @@
 package com.api.personal.finance.model;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,16 +14,22 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "category", schema = "public")
-@SequenceGenerator(name="category_id", sequenceName="category_id_seq", allocationSize=1, initialValue = 5)
-public class Category {
+@Table(name = "person", schema = "public")
+
+public class Person {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "category_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "person_id")
+	@SequenceGenerator(name="person_id", sequenceName="person_id_seq", allocationSize=1, initialValue = 5)
 	private Long id;
 	
 	@NotNull
-	@Size(max = 20 , min = 3)
+	@Size(min = 5, max = 40)
 	private String name;
 	
+	@Embedded
+	private Address address;
+	
+	@NotNull
+	private Boolean status;
 }

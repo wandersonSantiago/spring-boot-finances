@@ -20,47 +20,52 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.personal.finance.event.CreatedResourceEvent;
-import com.api.personal.finance.model.Category;
-import com.api.personal.finance.service.CategoryService;
+import com.api.personal.finance.model.Person;
+import com.api.personal.finance.service.PersonService;
 
 @RestController
-@RequestMapping(value = "/categories")
-public class CategoryResource {
+@RequestMapping(value = "/person")
+public class PersonResource {
 
 	@Autowired
-	private CategoryService service;
+	private PersonService service;
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
 		
 	@PostMapping
-	public ResponseEntity<Category> insert(@Valid @RequestBody Category category, HttpServletResponse response) {
-		service.insert(category);
-		publisher.publishEvent(new CreatedResourceEvent(this, response, category.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(category);
+	public ResponseEntity<Person> insert(@Valid @RequestBody Person person, HttpServletResponse response) {
+		service.insert(person);
+		publisher.publishEvent(new CreatedResourceEvent(this, response, person.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(person);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category category, HttpServletResponse response) {
-		Category  c = service.update(id, category);
-		publisher.publishEvent(new CreatedResourceEvent(this, response, c.getId()));
-		return ResponseEntity.status(HttpStatus.OK).body(c);
+	public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person, HttpServletResponse response) {
+		Person p = service.update(id, person);
+		publisher.publishEvent(new CreatedResourceEvent(this, response, p.getId()));
+		return ResponseEntity.status(HttpStatus.OK).body(p);
+	}
+	
+	@PutMapping("/{id}/status")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
+		service.updateStatus(id, status);
 	}
 
 	@GetMapping("/{id}")
-	public Category findById(@PathVariable Long id) {
+	public Person findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
-
+	
 	@GetMapping
-	public List<Category> findAll() {
+	public List<Person> findAll() {
 		return service.findAll();
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
-		service.delete(id);
-		
+		service.delete(id);		
 	}
 }
