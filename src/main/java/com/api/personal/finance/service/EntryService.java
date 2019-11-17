@@ -10,34 +10,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.api.personal.finance.model.Person;
-import com.api.personal.finance.repository.PersonRepository;
+import com.api.personal.finance.model.Entry;
+import com.api.personal.finance.repository.EntryRepository;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-public class PersonService {
+public class EntryService {
 
 	@Autowired
-	private PersonRepository repository;
+	private EntryRepository repository;
 	
 	
 	@Transactional(readOnly = false)
-	public void insert(Person person) {
-		repository.save(person);		
+	public void insert(Entry entry) {
+		repository.save(entry);		
 	}
 	
 	@Transactional(readOnly = false)
-	public Person update(Long id, Person person) {
-		  Person personSave = findById(id);
-		  BeanUtils.copyProperties(person, personSave, "id");
-		  return this.repository.save(personSave);
+	public Entry update(Long id, Entry entry) {
+		  Entry entrySave = findById(id);
+		  BeanUtils.copyProperties(entry, entrySave, "id");
+		  return this.repository.save(entrySave);
 		}
 	
-	public Person findById(Long id) {
+	public Entry findById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 	}
 	
-	public List<Person> findAll(){
+	public List<Entry> findAll(){
 		return repository.findAll();
 	}
 
@@ -49,9 +49,8 @@ public class PersonService {
 
 	@Transactional(readOnly = false)
 	public void updateStatus(Long id, Boolean status) {
-		 Person personSave = findById(id);
-		 personSave.setStatus(status);
-		 repository.save(personSave);
+		 Entry entrySave = findById(id);
+		 repository.save(entrySave);
 	}
 
 
