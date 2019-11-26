@@ -2,13 +2,13 @@ package com.api.personal.finance.resource;
 
 
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.personal.finance.event.CreatedResourceEvent;
 import com.api.personal.finance.model.Entry;
+import com.api.personal.finance.repository.filter.EntryFilter;
 import com.api.personal.finance.service.EntryService;
 
 @RestController
@@ -37,9 +38,9 @@ public class EntryResource {
 		
 	@PostMapping
 	public ResponseEntity<Entry> insert(@Valid @RequestBody Entry entry, HttpServletResponse response) {
-		service.insert(entry);
+		Entry entrySave = service.insert(entry);
 		publisher.publishEvent(new CreatedResourceEvent(this, response, entry.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(entry);
+		return ResponseEntity.status(HttpStatus.CREATED).body(entrySave);
 	}
 	
 	@PutMapping("/{id}")
@@ -61,8 +62,8 @@ public class EntryResource {
 	}
 	
 	@GetMapping
-	public List<Entry> findAll() {
-		return service.findAll();
+	public Page<Entry> searchEntryFilter(EntryFilter filter, Pageable page) {
+		return service.searchEntryFilter(filter, page);
 	}
 
 	@DeleteMapping("/{id}")

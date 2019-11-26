@@ -32,4 +32,8 @@ public class Person {
 	
 	@NotNull
 	private Boolean status;
+
+	public boolean isInactive() {
+		return !status;
+	}
 }

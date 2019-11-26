@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.api.personal.finance.enuns.TypesEnum;
 
@@ -27,16 +28,22 @@ public class Entry {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "entry_id")
 	private Long id;
+	@NotNull
 	private String decription;
-	private LocalDate dataExpiry;
+	@NotNull
+	private LocalDate dateExpiry;
 	private LocalDate datePayment;
+	@NotNull
 	private BigDecimal amount;
 	private String observation;
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private TypesEnum types;
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "id_category")
 	private Category category;
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "id_person")
 	private Person person;
