@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class CategoryResource {
 	
 		
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CREATE_CATEGORY') and #oauth2.hasScope('write')")
 	public ResponseEntity<Category> insert(@Valid @RequestBody Category category, HttpServletResponse response) {
 		service.insert(category);
 		publisher.publishEvent(new CreatedResourceEvent(this, response, category.getId()));
@@ -41,6 +43,7 @@ public class CategoryResource {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CREATE_CATEGORY') and #oauth2.hasScope('write')")
 	public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category category, HttpServletResponse response) {
 		Category  c = service.update(id, category);
 		publisher.publishEvent(new CreatedResourceEvent(this, response, c.getId()));
@@ -48,16 +51,19 @@ public class CategoryResource {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_SEARCH_CATEGORY') and #oauth2.hasScope('read')")
 	public Category findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_SEARCH_CATEGORY') and #oauth2.hasScope('read')")
 	public List<Category> findAll() {
 		return service.findAll();
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CREATE_CATEGORY') and #oauth2.hasScope('read')")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
 		service.delete(id);

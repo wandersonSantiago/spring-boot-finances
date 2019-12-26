@@ -15,7 +15,6 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "person", schema = "public")
-
 public class Person {
 
 	@Id

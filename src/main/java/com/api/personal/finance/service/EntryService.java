@@ -18,6 +18,7 @@ import com.api.personal.finance.model.Person;
 import com.api.personal.finance.repository.EntryRepository;
 import com.api.personal.finance.repository.PersonRepository;
 import com.api.personal.finance.repository.filter.EntryFilter;
+import com.api.personal.finance.repository.projection.EntryResume;
 
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -68,6 +69,10 @@ public class EntryService {
 
 	public Page<Entry> searchEntryFilter(EntryFilter filter, Pageable page) {
 		return repository.filter(filter, page);
+	}
+
+	public Page<EntryResume> searchEntryFilterResume(EntryFilter filter, Pageable page) {
+		return repository.resume(filter, page);
 	}
 
 }

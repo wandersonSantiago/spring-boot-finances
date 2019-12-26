@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class PersonResource {
 	
 		
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CREATE_PERSON') and #oauth2.hasScope('write')")
 	public ResponseEntity<Person> insert(@Valid @RequestBody Person person, HttpServletResponse response) {
 		service.insert(person);
 		publisher.publishEvent(new CreatedResourceEvent(this, response, person.getId()));
@@ -41,6 +43,7 @@ public class PersonResource {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CREATE_PERSON') and #oauth2.hasScope('write')")
 	public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person, HttpServletResponse response) {
 		Person p = service.update(id, person);
 		publisher.publishEvent(new CreatedResourceEvent(this, response, p.getId()));
@@ -48,22 +51,26 @@ public class PersonResource {
 	}
 	
 	@PutMapping("/{id}/status")
+	@PreAuthorize("hasAuthority('ROLE_CREATE_PERSON') and #oauth2.hasScope('write')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateStatus(@PathVariable Long id, @RequestBody Boolean status) {
 		service.updateStatus(id, status);
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
 	public Person findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
 	public List<Person> findAll() {
 		return service.findAll();
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVE_PERSON') and #oauth2.hasScope('write')")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
 		service.delete(id);		

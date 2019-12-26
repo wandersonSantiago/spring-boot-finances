@@ -29,7 +29,7 @@ public class Entry {
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "entry_id")
 	private Long id;
 	@NotNull
-	private String decription;
+	private String description;
 	@NotNull
 	private LocalDate dateExpiry;
 	private LocalDate datePayment;

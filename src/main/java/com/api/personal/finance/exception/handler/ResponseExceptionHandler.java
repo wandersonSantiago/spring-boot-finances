@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -72,6 +73,14 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 		String messageDev = ExceptionUtils.getRootCauseMessage(ex);
 		List<Error> errorList = Arrays.asList(new Error(messageUser, messageDev));
 		return handleExceptionInternal(ex, errorList, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+	
+	@ExceptionHandler({ Unauthorized.class } )
+	public ResponseEntity<Object> handleUnauthorizedException(Unauthorized ex, WebRequest request) {
+		String messageUser = messageSource.getMessage("resource.unathorized-forbidden", null, LocaleContextHolder.getLocale());
+		String messageDev = ExceptionUtils.getRootCauseMessage(ex);
+		List<Error> errorList = Arrays.asList(new Error(messageUser, messageDev));
+		return handleExceptionInternal(ex, errorList, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
 	}
 	
 	private List<Error> createErrorList(BindingResult bindingResult) {

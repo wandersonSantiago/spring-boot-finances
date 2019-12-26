@@ -8,15 +8,9 @@ spring:
     
     
   datasource:
-    tomcat:
-      initial-size: 15
-      max-wait: 20000
-      max-active: 50
-      max-idle: 15
-      min-idle: 8
-      default-auto-commit: true
-      test-on-borrow: true
-      validation-query: SELECT 1
+    hikari:      connection-timeout: 30000
+      maximum-pool-size: 50
+      minimum-idle: 10
   jackson:    deserialization:      fail-on-unknown-properties: true   
       fail-on-ignored-properties: true 
   mvc:

@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import com.api.personal.finance.model.Entry;
 import com.api.personal.finance.repository.filter.EntryFilter;
+import com.api.personal.finance.repository.projection.EntryResume;
 
 public class EntryRepositoryImpl implements EntryRepositoryQuery{
 
@@ -44,6 +45,33 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery{
 		
 		return new PageImpl<>(query.getResultList(), pageable, total(filter));
 	}
+	
+	@Override
+	public Page<EntryResume> resume(EntryFilter filter, Pageable pageable) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<EntryResume> criteria = builder.createQuery(EntryResume.class);
+		
+		Root<Entry> root = criteria.from(Entry.class);
+		
+		criteria.select(builder.construct(EntryResume.class, root.get("id"),
+				root.get("description")
+				,root.get("dateExpiry")
+				,root.get("datePayment")
+				,root.get("amount")
+				,root.get("types")
+				,root.join("category").get("name")
+				,root.join("person").get("name")));
+		
+		Predicate[] predicates = createConstraints(filter, builder, root);
+		
+		criteria.where(predicates);
+		TypedQuery<EntryResume> query = entityManager.createQuery(criteria);
+		
+		addPagingRestrictions(query, pageable);
+		
+		
+		return new PageImpl<>(query.getResultList(), pageable, total(filter));
+	}
 
 	private Predicate[] createConstraints(EntryFilter filter, CriteriaBuilder builder, Root<Entry> root) {
 
@@ -63,7 +91,7 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery{
 	}
 	
 	
-	private void addPagingRestrictions(TypedQuery<Entry> query, Pageable pageable) {
+	private void addPagingRestrictions(TypedQuery<?> query, Pageable pageable) {
 		int currentPage = pageable.getPageNumber();
 		int totalRecordsPerPage = pageable.getPageSize();
 		int firstPageRegistration = currentPage * totalRecordsPerPage;
