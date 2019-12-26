@@ -4,8 +4,7 @@ server:
 spring:
   profiles:
     active:
-    - prod
-    
+    - dev   
     
   datasource:
     hikari:      connection-timeout: 30000
