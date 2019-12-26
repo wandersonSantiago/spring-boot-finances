@@ -1,12 +1,12 @@
 package com.api.personal.finance.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.personal.finance.event.CreatedResourceEvent;
 import com.api.personal.finance.model.Person;
+import com.api.personal.finance.repository.filter.PersonFilter;
 import com.api.personal.finance.service.PersonService;
 
 @RestController
@@ -62,13 +63,13 @@ public class PersonResource {
 	public Person findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
-	
+
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
-	public List<Person> findAll() {
-		return service.findAll();
+	public Page<Person> searchPersonFilter(PersonFilter filter, Pageable page) {
+		return service.searchPersonFilter(filter, page);
 	}
-
+	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_REMOVE_PERSON') and #oauth2.hasScope('write')")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
