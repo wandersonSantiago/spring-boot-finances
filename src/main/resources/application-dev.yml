@@ -17,5 +17,7 @@ spring:
     username: postgres
     password: '951753'
    
-
-
+finances:
+  security:
+    enanble-https: false
+    origin-allow: 'http://localhost:8000'
